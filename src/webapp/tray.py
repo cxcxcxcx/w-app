@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 
-import gtk, keybinder
-import const, utils
-from configwindow import ConfigWindow
+import gtk
+import keybinder
+import utils
+
 
 class Tray():
     def __init__(self, app):
@@ -21,12 +22,13 @@ class Tray():
         else:
             self.makeTray()
         self.webview.connect('title-changed', self.title_changed)
-        keybinder.bind(self.config.hot_key, self.keybind_callback)
+        if self.config["hot_key"]:
+            keybinder.bind(self.config["hot_key"], self.keybind_callback)
 
     def makeTray(self):
         self.tray = gtk.StatusIcon()
-        self.tray.set_from_file(self.app.ICON)
-        self.tray.set_tooltip(self.app.NAME + ' ' + const.VERSION)
+        self.tray.set_from_file(self.app.get_app_icon())
+        self.tray.set_tooltip(self.app.appInfo["name"])
         self.tray.connect('activate', self.click_tray)
         self.tray.connect('popup-menu',
             lambda statusicon, button, activate_time: \
@@ -37,10 +39,10 @@ class Tray():
         import appindicator
         self.tray = appindicator.Indicator(
                 "example-simple-client",
-                self.app.NAME,
+                self.app.appInfo["name"],
                 appindicator.CATEGORY_APPLICATION_STATUS)
         self.tray.set_status(appindicator.STATUS_ACTIVE)
-        self.iconChange(self.app.ICON)
+        self.iconChange(self.app.get_app_icon())
         self.tray.set_menu(self.pop_menu)
 
     def makePopup(self):
@@ -63,18 +65,22 @@ class Tray():
         #pop_menu.popup(None, None, None, 0, gtk.get_current_event_time())
 
     def iconChange(self, name):
-        self.tray.set_icon(const.CURRENT_PATH + name)
+        if self.isUnity:
+            self.tray.set_icon(name)
+        else:
+            self.tray.set_from_file(self.app.get_app_icon())
 
     def title_changed(self, view, frame, title):
         windowtitle = self.window.get_title()
-        if not title.startswith(self.app.INITIAL_TITLE) and not utils.same_title(windowtitle, title):
+        if not title.startswith(self.app.appInfo["initial_title"]) and \
+                not utils.same_title(windowtitle, title):
             utils.notification(self.app, "有新消息来了", title)
             if self.isUnity:
                 self.iconChange('QQ1.png')
             else:
                 self.tray.set_blinking(True)
             self.blinking = True
-        if title.startswith(self.app.INITIAL_TITLE):
+        if title.startswith(self.app.appInfo["initial_title"]):
             if self.isUnity:
                 self.iconChange('QQ.png')
             else:
@@ -89,13 +95,13 @@ class Tray():
         self.show_or_hide()
 
     def click_config(self, widget):
-        ConfigWindow(self.webview, self, self.config)
+        self.config.edit()
 
     def show_or_hide(self):
         if self.window.is_active():
             self.window.hide()
         else:
             if self.blinking:
-                self.iconChange('QQ.png')
+                self.iconChange(self.app.get_app_icon())
                 self.blinking = False
             self.window.present()

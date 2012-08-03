@@ -1,0 +1,11 @@
+{
+	"uuid": "bb3a45ac-f6dc-4ae1-ab8f-6534d04cc468",
+    "name": "pyWebQQ", 
+    "url": "http://web.qq.com/", 
+    "initial_title": "Q+ Web", 
+    "icon": "QQ.png", 
+
+	"view_class": ["webqqview", "WebQQView"],
+	"conf_class": ["webqqconf", "WebQQConfig"],
+    "size": [900, 600]
+}

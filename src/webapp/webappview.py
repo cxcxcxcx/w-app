@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 
-import os, webkit, ctypes, webbrowser
-import const
+import webkit
+import ctypes
 
 try:
     libwebkit = ctypes.CDLL('libwebkitgtk-1.0.so.0')
@@ -14,6 +14,7 @@ except:
 
 libgobject = ctypes.CDLL('libgobject-2.0.so.0')
 libsoup = ctypes.CDLL('libsoup-2.4.so.1')
+
 
 class WebAppView(webkit.WebView):
     def __init__(self, config):
@@ -27,7 +28,7 @@ class WebAppView(webkit.WebView):
 
     def init_settings(self):
         settings = self.get_settings()
-        settings.set_property("auto-resize-window", False)
+        #settings.set_property("auto-resize-window", False)
         settings.set_property('enable-universal-access-from-file-uris', True)
         settings.set_property('enable-file-access-from-file-uris', True)
         settings.set_property('enable-page-cache', True)
@@ -36,20 +37,21 @@ class WebAppView(webkit.WebView):
         #settings.set_property('user-agent', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.4+ (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.4+')
 
     def init_cookie(self):
-        if not os.path.exists(const.COOKIE_PATH):
-            os.makedirs(const.COOKIE_PATH)
-        if not os.path.exists(const.COOKIE_FILE):
-            os.mknod(const.COOKIE_FILE)
+        cookie_file = self.config.app.get_user_file(
+            "cookies.txt", make_dir=True, touch_file=True)
+        cookie_file = str(cookie_file)
         session = libwebkit.webkit_get_default_session()
-        soup_cookie = libsoup.soup_cookie_jar_text_new(const.COOKIE_FILE, False)
+        soup_cookie = libsoup.soup_cookie_jar_text_new(cookie_file, False)
         if soup_cookie < 0:
             raise Exception("Incorrect cookie value: %s" % (soup_cookie))
-        libgobject.g_object_set(session, 'add-feature', soup_cookie, None)
+        libsoup.soup_session_add_feature(session, soup_cookie)
+        #libgobject.g_object_set(session, 'add-feature', soup_cookie, None)
 
     def init_proxy(self):
-        if self.config.proxy_enable == 'yes':
+        if self.config["proxy_enable"]:
             session = libwebkit.webkit_get_default_session()
-            libgobject.g_object_set(session, 'proxy-uri', self.config.proxy_uri, None)
+            libgobject.g_object_set(
+                session, 'proxy-uri', self.config["proxy_uri"], None)
 
     def init_signals(self):
         pass

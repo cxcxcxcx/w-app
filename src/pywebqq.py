@@ -1,36 +1,48 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding=utf-8 -*-
 
 import gtk
 
-from config import Config
-
+import os
+import sys
+from webapp.config import Config
 from webapp.webapp import WebApp
 
-class WebGTaskApp(WebApp):
-    #URL = "https://mail.google.com/tasks/canvas"
-    URL = "https://mail.google.com/tasks/android"
-    INITIAL_TITLE = "Tasks"
-    ICON = 'QQ.png'
-    NAME = "Google Tasks App"
-    CONF_PREFIX = "gtasks"
 
-    SIZE = (470, 600)
+def loadClass(confList, default):
+    if confList is None:
+        return default
 
-class WebQQApp(WebApp):
-    URL = "http://web.qq.com/"
+    try:
+        modName, clsName = confList
+        return getattr(__import__(modName), clsName)
+    except:
+        raise
+        print "Use default class"
+        return default
 
-    INITIAL_TITLE = "Q+ Web"
-    ICON = 'QQ.png'
-    NAME = "pyWebQQ"
-    CONF_PREFIX = "gtasks"
 
-    SIZE = (900, 600)
+class AppFromFile(WebApp):
+    def __init__(self, appFile, *args, **kargs):
+        #print json.dumps(dict(conf.items("app")), indent=4)
+        import json
+        self.appInfo = json.load(open(appFile, "r"))
+        self.appDir = os.path.dirname(appFile)
+        print self.appInfo
+
+        sys.path.append(os.path.join(self.appDir, 'src'))
+
+        from webapp.webappview import WebAppView
+        viewCls = loadClass(self.appInfo.get("view_class", None), WebAppView)
+        confCls = loadClass(self.appInfo.get("conf_class", None), Config)
+
+        WebApp.__init__(self, viewCls, confCls)
 
 if __name__ == '__main__':
-    config = Config()
-    from webapp.webappview import WebAppView
-    WebGTaskApp(WebAppView(config), config)
+    #AppFromFile("apps/gtasks/gtasks.json")
+    AppFromFile("apps/webqq/webqq.json")
+    #AppFromFile("apps/gtasks.json", WebAppView, Config)
+    #WebGTaskApp(WebAppView(config), config)
     #from webqqview import WebQQView
     #WebQQApp(WebQQView(config), config)
     gtk.main()

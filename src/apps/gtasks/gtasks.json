@@ -1,0 +1,9 @@
+{
+	"uuid": "5ba57fd7-6c49-4f29-86f6-a36ee5dbbc8e",
+    "name": "Google Tasks", 
+    "url": "https://mail.google.com/tasks/android", 
+    "initial_title": "Tasks", 
+    "icon": "GTasks.png", 
+    "size": [470, 600]
+}
+
