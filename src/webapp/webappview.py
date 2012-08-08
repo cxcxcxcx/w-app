@@ -34,6 +34,9 @@ class WebAppView(webkit.WebView):
         settings.set_property('enable-page-cache', True)
         settings.set_property('enable-spatial-navigation', True)
         settings.set_property('enable-site-specific-quirks', True)
+        #settings.set_property('user-agent', 'Mozilla/5.0 (SymbianOS/9.1; U; [en-us]) AppleWebKit/413 (KHTML, like Gecko) Safari/413')
+        #settings.set_property('user-agent', 'Mozilla/5.0 (Linux; U; Android 2.2; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1')
+        self.set_settings(settings)
         #settings.set_property('user-agent', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.4+ (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.4+')
 
     def init_cookie(self):

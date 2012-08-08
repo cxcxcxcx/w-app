@@ -21,6 +21,7 @@ class Config(object):
         except IOError:
             print "FILE NOT FOUND"
             self.conf = self.defaultSetup
+            self.save()
 
     def __getitem__(self, y):
         return self.conf[y]
@@ -32,5 +33,9 @@ class Config(object):
         with open(self.conf_file, 'w') as f:
             json.dump(self.conf, f, ensure_ascii=False, indent=4)
 
+    def reload(self):
+        print "reload config..."
+
     def edit(self):
-        pass
+        import subprocess
+        subprocess.call(['xdg-open', self.conf_file])

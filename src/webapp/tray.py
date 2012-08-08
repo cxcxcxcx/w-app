@@ -4,6 +4,8 @@
 import gtk
 import keybinder
 import utils
+#import gettext
+#from gettext import gettext as _
 
 
 class Tray():
@@ -13,6 +15,9 @@ class Tray():
         self.config = app.config
         self.app = app
         self.blinking = False
+
+        self.icon = self.app.get_app_icon()
+        self.icon_alt = self.app.get_app_icon(get_alt=True)
 
         self.makePopup()
 
@@ -27,7 +32,7 @@ class Tray():
 
     def makeTray(self):
         self.tray = gtk.StatusIcon()
-        self.tray.set_from_file(self.app.get_app_icon())
+        self.tray.set_from_file(self.icon)
         self.tray.set_tooltip(self.app.appInfo["name"])
         self.tray.connect('activate', self.click_tray)
         self.tray.connect('popup-menu',
@@ -42,21 +47,21 @@ class Tray():
                 self.app.appInfo["name"],
                 appindicator.CATEGORY_APPLICATION_STATUS)
         self.tray.set_status(appindicator.STATUS_ACTIVE)
-        self.iconChange(self.app.get_app_icon())
+        self.change_icon(self.icon)
         self.tray.set_menu(self.pop_menu)
 
     def makePopup(self):
         pop_menu = gtk.Menu()
-        item1 = gtk.MenuItem('显示/隐藏窗口')
+        item1 = gtk.MenuItem(_('Show/Hide Window'))
         item1.connect("activate", self.click_tray)
         pop_menu.append(item1)
 
-        item2 = gtk.MenuItem('配置...')
+        item2 = gtk.MenuItem(_('Configure...'))
         item2.connect("activate", self.click_config)
         pop_menu.append(item2)
 
         item3 = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        item3.set_label('退出')
+        item3.set_label(_('Exit'))
         item3.connect("activate", gtk.main_quit)
         pop_menu.append(item3)
 
@@ -64,28 +69,29 @@ class Tray():
         self.pop_menu = pop_menu
         #pop_menu.popup(None, None, None, 0, gtk.get_current_event_time())
 
-    def iconChange(self, name):
+    def change_icon(self, name):
         if self.isUnity:
             self.tray.set_icon(name)
         else:
-            self.tray.set_from_file(self.app.get_app_icon())
+            self.tray.set_from_file(self.icon)
+
+    def set_blinking(self, blink):
+        self.blinking = blink
+        if self.isUnity:
+            self.change_icon(
+                self.icon_alt if blink else self.icon)
+        else:
+            self.tray.set_blinking(blink)
 
     def title_changed(self, view, frame, title):
         windowtitle = self.window.get_title()
         if not title.startswith(self.app.appInfo["initial_title"]) and \
                 not utils.same_title(windowtitle, title):
-            utils.notification(self.app, "有新消息来了", title)
-            if self.isUnity:
-                self.iconChange('QQ1.png')
-            else:
-                self.tray.set_blinking(True)
-            self.blinking = True
+            utils.notification(self.app, _("Notice"), title)
+            self.set_blinking(True)
+
         if title.startswith(self.app.appInfo["initial_title"]):
-            if self.isUnity:
-                self.iconChange('QQ.png')
-            else:
-                self.tray.set_blinking(False)
-            self.blinking = False
+            self.set_blinking(False)
         self.window.set_title(title)
 
     def keybind_callback(self):
@@ -102,6 +108,5 @@ class Tray():
             self.window.hide()
         else:
             if self.blinking:
-                self.iconChange(self.app.get_app_icon())
-                self.blinking = False
+                self.set_blinking(False)
             self.window.present()

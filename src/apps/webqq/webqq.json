@@ -4,6 +4,7 @@
     "url": "http://web.qq.com/", 
     "initial_title": "Q+ Web", 
     "icon": "QQ.png", 
+    "icon_alt": "QQ1.png", 
 
 	"view_class": ["webqqview", "WebQQView"],
 	"conf_class": ["webqqconf", "WebQQConfig"],
