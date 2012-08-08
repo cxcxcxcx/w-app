@@ -12,7 +12,7 @@ class WebApp():
     def __init__(self, webviewCls, configCls):
         #config = Config()
         self.config = configCls(self)
-        self.webview = webviewCls(self.config)
+        self.webview = webviewCls(self)
         self.window = MainWindow(self.webview, self)
         self.tray = tray.Tray(self)
 
@@ -35,6 +35,15 @@ class WebApp():
 
         #print icon_path
         return icon_path
+
+    def notification(self, content, title):
+        """Show a notification"""
+        import pynotify
+        pynotify.init(self.appInfo["initial_title"])
+        notify = pynotify.Notification(content, title, self.get_app_icon())
+        notify.set_urgency(pynotify.URGENCY_NORMAL)
+        notify.set_timeout(3)
+        notify.show()
 
     def run(self):
         gtk.main()

@@ -1,38 +1,24 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 
-import ctypes
 import webbrowser
 import qqutils
-
-try:
-    libwebkit = ctypes.CDLL('libwebkitgtk-1.0.so.0')
-except:
-    try:
-        libwebkit = ctypes.CDLL('libwebkit-1.0.so.2')
-    except:
-        libwebkit = ctypes.CDLL('libwebkitgtk-1.0.so')
-
-libgobject = ctypes.CDLL('libgobject-2.0.so.0')
-libsoup = ctypes.CDLL('libsoup-2.4.so.1')
-
+from webapp import utils
 from webapp.webappview import WebAppView
 
 
 class WebQQView(WebAppView):
-    def __init__(self, config):
-        WebAppView.__init__(self, config)
+    def __init__(self, app):
         self.hovered_uri = None
-        self.config = config
-        self.init_signals()
+        WebAppView.__init__(self, app)
 
     def init_signals(self):
-        self.connect('mime-type-policy-decision-requested', self.policy_decision_requested)
-        self.connect('download-requested', self.download_requested)
+        WebAppView.init_signals(self)
         self.connect("create-web-view", self.create_webView)
         self.connect("hovering-over-link", self.hovering_over_ink)
         self.connect("navigation-policy-decision-requested", self.navigation_policy_decision_requested)
         self.connect("load-finished", self.load_finished)
+        self.connect('title-changed', self.title_changed)
 
     def load_finished(self, view, frame):
         #print view.get_property('uri') + ':ok:' + frame.get_property('uri')
@@ -53,28 +39,20 @@ class WebQQView(WebAppView):
             return True
         return False
 
-    def policy_decision_requested(self, view, frame, request, mimetype, decision):
-        if self.can_show_mime_type(mimetype):
-            return False
-        decision.download()
-        return True
-
-    def download_requested(self, view, download):
-        download.connect('notify::status', self.download_status)
-        download.set_destination_uri('file://' + self.config["save_path"] + '/' + download.get_suggested_filename())
-        return True
-
-    def download_status(self, download, pspec):
-        if download.get_status() == -1:
-            utils.notification("文件下载失败", self.config["save_path"] + '/' + download.get_suggested_filename())
-        if download.get_status() == 1:
-            utils.notification("文件开始下载", self.config["save_path"] + '/' + download.get_suggested_filename())
-        if download.get_status() == 3:
-            utils.notification("文件下载完成", self.config["save_path"] + '/' + download.get_suggested_filename())
-
     def create_webView(self, view, frame):
         if self.hovered_uri:
             webbrowser.open_new_tab(self.hovered_uri)
 
     def hovering_over_ink(self, view, title, uri):
         self.hovered_uri = uri
+
+    def title_changed(self, view, frame, title):
+        windowtitle = self.app.window.get_title()
+        if not title.startswith(self.app.appInfo["initial_title"]) and \
+                not utils.same_title(windowtitle, title):
+            self.app.notification(_("Notice"), title)
+            self.app.tray.set_blinking(True)
+
+        if title.startswith(self.app.appInfo["initial_title"]):
+            self.app.tray.set_blinking(False)
+        self.app.window.set_title(title)

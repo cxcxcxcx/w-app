@@ -3,7 +3,6 @@
 
 import gtk.glade
 import keybinder
-from webapp import utils
 from webapp.widgets import KeyGrabber, KeyModifier
 
 
@@ -92,7 +91,7 @@ class ConfigWindow:
         keybinder.bind(self.config["hot_key"], self.tray.keybind_callback)
         self.webview.init_proxy()
         self.config.save()
-        utils.notification(self.app, '保存配置成功', '部分配置重启程序后生效')
+        self.app.notification('保存配置成功', '部分配置重启程序后生效')
         self.window.destroy()
 
     def btncancle_clicked(self, widget):

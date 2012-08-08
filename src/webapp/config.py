@@ -2,6 +2,7 @@
 # -*- coding=utf-8 -*-
 
 import json
+import utils
 
 
 class Config(object):
@@ -10,6 +11,7 @@ class Config(object):
         'proxy_enable': False,
         'proxy_uri': 'http://127.0.0.1:8000',
         'hot_key': None,
+        'save_path': utils.get_user_download_dir()
     }
 
     def __init__(self, app):
@@ -24,7 +26,11 @@ class Config(object):
             self.save()
 
     def __getitem__(self, y):
-        return self.conf[y]
+        try:
+            return self.conf[y]
+        except KeyError:
+            self.conf[y] = self.defaultSetup[y]
+            return self.conf[y]
 
     def __setitem__(self, y, new):
         self.conf[y] = new

@@ -17,14 +17,15 @@ libsoup = ctypes.CDLL('libsoup-2.4.so.1')
 
 
 class WebAppView(webkit.WebView):
-    def __init__(self, config):
+    def __init__(self, app):
         webkit.WebView.__init__(self)
         #self.hovered_uri = None
-        self.config = config
+        self.config = app.config
+        self.app = app
         self.init_settings()
         self.init_cookie()
         self.init_proxy()
-        #self.init_signals()
+        self.init_signals()
 
     def init_settings(self):
         settings = self.get_settings()
@@ -34,7 +35,6 @@ class WebAppView(webkit.WebView):
         settings.set_property('enable-page-cache', True)
         settings.set_property('enable-spatial-navigation', True)
         settings.set_property('enable-site-specific-quirks', True)
-        #settings.set_property('user-agent', 'Mozilla/5.0 (SymbianOS/9.1; U; [en-us]) AppleWebKit/413 (KHTML, like Gecko) Safari/413')
         #settings.set_property('user-agent', 'Mozilla/5.0 (Linux; U; Android 2.2; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1')
         self.set_settings(settings)
         #settings.set_property('user-agent', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.4+ (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.4+')
@@ -48,7 +48,6 @@ class WebAppView(webkit.WebView):
         if soup_cookie < 0:
             raise Exception("Incorrect cookie value: %s" % (soup_cookie))
         libsoup.soup_session_add_feature(session, soup_cookie)
-        #libgobject.g_object_set(session, 'add-feature', soup_cookie, None)
 
     def init_proxy(self):
         if self.config["proxy_enable"]:
@@ -57,13 +56,33 @@ class WebAppView(webkit.WebView):
                 session, 'proxy-uri', self.config["proxy_uri"], None)
 
     def init_signals(self):
-        pass
-        #self.connect('mime-type-policy-decision-requested', self.policy_decision_requested)
-        #self.connect('download-requested', self.download_requested)
-        #self.connect("create-web-view", self.create_webView)
-        #self.connect("hovering-over-link", self.hovering_over_ink)
-        #self.connect("navigation-policy-decision-requested", self.navigation_policy_decision_requested)
-        #self.connect("load-finished", self.load_finished)
+        self.connect(
+                'mime-type-policy-decision-requested',
+                self.policy_decision_requested)
+        self.connect('download-requested', self.download_requested)
+
+    def download_requested(self, view, download):
+        download.connect('notify::status', self.download_status)
+        download.set_destination_uri(
+                'file://' + self.config["save_path"] + '/' +
+                    download.get_suggested_filename())
+        return True
+
+    def download_status(self, download, pspec):
+        file_name = self.config["save_path"] + '/' + \
+                        download.get_suggested_filename()
+        if download.get_status() == -1:
+            self.app.notification(_("Download Failed"), file_name)
+        if download.get_status() == 1:
+            self.app.notification(_("File download started"), file_name)
+        if download.get_status() == 3:
+            self.app.notification(_("File download completed"), file_name)
+
+    def policy_decision_requested(self, view, frame, request, mimetype, decision):
+        if self.can_show_mime_type(mimetype):
+            return False
+        decision.download()
+        return True
 
     #def load_finished(self, view, frame):
         ##print view.get_property('uri') + ':ok:' + frame.get_property('uri')
@@ -72,36 +91,11 @@ class WebAppView(webkit.WebView):
             #self.execute_script('alloy.portal.runApp(50);')
             #return
 
-        #if utils.is_qq_login(frame_uri):
-            #self.execute_script("document.getElementById('ifram_login').contentWindow.document.getElementById('p').value='" + self.config.login_password + "';")
-            #self.execute_script("document.getElementById('ifram_login').contentWindow.onStateItemClick(" + self.config.login_status + ");")
-            ##if self.login_password != '':
-            ##    self.execute_script("document.getElementById('ifram_login').contentWindow.document.getElementById('loginform').submit();")
-
     #def navigation_policy_decision_requested(self, view, frame, request, aciton, decision):
         #if utils.is_qq_download(request.get_uri()):
             #decision.download()
             #return True
         #return False
-
-    #def policy_decision_requested(self, view, frame, request, mimetype, decision):
-        #if self.can_show_mime_type(mimetype):
-            #return False
-        #decision.download()
-        #return True
-
-    #def download_requested(self, view, download):
-        #download.connect('notify::status', self.download_status)
-        #download.set_destination_uri('file://' + self.config.save_path + '/' + download.get_suggested_filename())
-        #return True
-
-    #def download_status(self, download, pspec):
-        #if download.get_status() == -1:
-            #utils.notification("文件下载失败", self.config.save_path + '/' + download.get_suggested_filename())
-        #if download.get_status() == 1:
-            #utils.notification("文件开始下载", self.config.save_path + '/' + download.get_suggested_filename())
-        #if download.get_status() == 3:
-            #utils.notification("文件下载完成", self.config.save_path + '/' + download.get_suggested_filename())
 
     #def create_webView(self, view, frame):
         #if self.hovered_uri:

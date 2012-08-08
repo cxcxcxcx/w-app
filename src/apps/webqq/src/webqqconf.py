@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 
-from webapp import utils
 from webapp.config import Config
 
 
@@ -11,7 +10,6 @@ class WebQQConfig(Config):
         'login_password': '',
         'login_status': '40',
         'hot_key': '<Alt>Q',
-        'save_path': utils.get_user_download_dir()
     }.items())
 
     def __init__(self, *args, **kargs):

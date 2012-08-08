@@ -4,8 +4,6 @@
 import gtk
 import keybinder
 import utils
-#import gettext
-#from gettext import gettext as _
 
 
 class Tray():
@@ -26,7 +24,6 @@ class Tray():
             self.makeUnityTray()
         else:
             self.makeTray()
-        self.webview.connect('title-changed', self.title_changed)
         if self.config["hot_key"]:
             keybinder.bind(self.config["hot_key"], self.keybind_callback)
 
@@ -82,17 +79,6 @@ class Tray():
                 self.icon_alt if blink else self.icon)
         else:
             self.tray.set_blinking(blink)
-
-    def title_changed(self, view, frame, title):
-        windowtitle = self.window.get_title()
-        if not title.startswith(self.app.appInfo["initial_title"]) and \
-                not utils.same_title(windowtitle, title):
-            utils.notification(self.app, _("Notice"), title)
-            self.set_blinking(True)
-
-        if title.startswith(self.app.appInfo["initial_title"]):
-            self.set_blinking(False)
-        self.window.set_title(title)
 
     def keybind_callback(self):
         self.show_or_hide()

@@ -1,16 +1,7 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 
-import pynotify
 import os
-
-
-def notification(app, content, title):
-    pynotify.init(app.appInfo["initial_title"])
-    notify = pynotify.Notification(content, title, app.get_app_icon())
-    notify.set_urgency(pynotify.URGENCY_NORMAL)
-    notify.set_timeout(3)
-    notify.show()
 
 
 def is_unity():
