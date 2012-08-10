@@ -1,12 +1,10 @@
 {
 	"uuid": "8357cace-934c-45a2-a67f-b1b1d547a280",
     "name": "Google Calendar", 
-	"url-b": "http://www.google.com/calendar/gp?dc=gorganic", 
-    "url": "http://mail.google.com/mail/mu/mp/", 
     "url": "http://calendar.google.com", 
-    "initial_title": "Tasks", 
+	"url": "http://www.google.com/calendar/gp?dc=gorganic", 
     "icon": "gcal.png", 
 	"icon-url": "https://developers.google.com/chrome/web-store/images/imageAssets/calendar.png",
-    "size": [470, 600]
+    "size": [1024, 700]
 }
 

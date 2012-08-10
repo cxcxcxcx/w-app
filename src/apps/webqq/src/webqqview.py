@@ -55,4 +55,4 @@ class WebQQView(WebAppView):
 
         if title.startswith(self.app.appInfo["initial_title"]):
             self.app.tray.set_blinking(False)
-        self.app.window.set_title(title)
+        WebAppView.title_changed(self, view, frame, title)

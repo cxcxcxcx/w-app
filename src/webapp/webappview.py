@@ -60,6 +60,7 @@ class WebAppView(webkit.WebView):
                 'mime-type-policy-decision-requested',
                 self.policy_decision_requested)
         self.connect('download-requested', self.download_requested)
+        self.connect('title-changed', self.title_changed)
 
     def download_requested(self, view, download):
         download.connect('notify::status', self.download_status)
@@ -83,6 +84,9 @@ class WebAppView(webkit.WebView):
             return False
         decision.download()
         return True
+
+    def title_changed(self, view, frame, title):
+        self.app.window.set_title(title)
 
     #def load_finished(self, view, frame):
         ##print view.get_property('uri') + ':ok:' + frame.get_property('uri')

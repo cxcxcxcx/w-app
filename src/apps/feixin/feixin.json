@@ -1,0 +1,10 @@
+{
+	"uuid": "14d6e89a-94b6-456d-92c8-25e7a672d18b",
+    "name": "飞信", 
+    "url": "https://webim.feixin.10086.cn/", 
+    "initial_title": "Tasks", 
+    "icon": "feixin.png", 
+	"icon-url": "http://dl.sj.91.com/soft/download/hiapk/upload/icon/20100713191253.png",
+    "size": [1024, 700]
+}
+
