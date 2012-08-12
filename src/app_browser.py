@@ -1,10 +1,15 @@
 import gtk
+import os
+
+
+def relPathToFullPath(relpath):
+    app_path = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(app_path, relpath)
 
 
 def getAllApps():
-    import os
     from webapp.webapp import WebApp
-    app_path = os.path.dirname(os.path.realpath(__file__))
+    app_path = relPathToFullPath('.')
     for root, dirs, files in os.walk(app_path):
         for i_file in files:
             if i_file.endswith(".json"):
@@ -14,7 +19,11 @@ def getAllApps():
 class AppBrowser(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
+
         self.set_default_size(800, 600)
+        self.set_title("W-App!")
+        self.set_wmclass("W-App!", "W-App!")
+        self.set_icon_from_file(relPathToFullPath("res/app_web.png"))
 
         liststore = gtk.ListStore(gtk.gdk.Pixbuf, str)
         appview = gtk.IconView(liststore)

@@ -22,7 +22,6 @@ class MainWindow(gtk.Window):
 
     def check_resize(self, window):
         self.set_size_request(*self.app.appInfo["size"])
-        #self.set_size_request(900, 600)
 
     def minimize(self, widget, event, data=None):
         self.hide()
