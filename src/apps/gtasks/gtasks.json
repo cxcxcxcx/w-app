@@ -1,14 +1,9 @@
 {
 	"uuid": "5ba57fd7-6c49-4f29-86f6-a36ee5dbbc8e",
     "name": "Google Tasks", 
-    "url-a": "https://mail.google.com/tasks/android", 
-	"url-b": "http://www.google.com/calendar/gp?dc=gorganic", 
-    "url": "http://mail.google.com/mail/mu/mp/", 
-    "url": "http://calendar.google.com", 
-    "url": "http://mail.google.com", 
-    "url-c": "http://local.linux-wiki.cn/", 
-    "initial_title": "Tasks", 
+    "url": "https://mail.google.com/tasks/android", 
+    "url": "https://mail.google.com/tasks/canvas", 
     "icon": "GTasks.png", 
-    "size": [470, 600]
+    "size": [800, 600]
 }
 

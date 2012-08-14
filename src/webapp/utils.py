@@ -1,5 +1,8 @@
-#!/usr/bin/env python
 # -*- coding=utf-8 -*-
+# The current version of this file partly comes from:
+#   http://code.google.com/p/python-webqq/
+# Copyright 2012 CHEN Xing (cx@chenxing.name)
+# BSD 3-Clause license and disclaimer applies.
 
 import os
 

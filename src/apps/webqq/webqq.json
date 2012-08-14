@@ -6,7 +6,7 @@
     "icon": "QQ.png", 
     "icon_alt": "QQ1.png", 
 
-	"icon-url": "http://0.web.qstatic.com/webqqpic/favicon32.ico?t=20111011001",
+	"icon-url": "http://0.web.qstatic.com/webqqpic/pubapps/0/50/images/big.png",
 
 	"view_class": ["webqqview", "WebQQView"],
 	"conf_class": ["webqqconf", "WebQQConfig"],
