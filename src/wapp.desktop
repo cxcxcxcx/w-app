@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=W-App
+Type=Application
+Exec=/usr/bin/wapp
+Icon=wapp
+Terminal=false
+GenericName=W-App

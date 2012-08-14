@@ -32,7 +32,7 @@ class AppBrowser(QtGui.QMainWindow):
         self.ui.listAppStock.setIconSize(QtCore.QSize(48, 48))
         self.ui.statusbar.showMessage("Double click to start an app.")
 
-        self.setWindowIcon(QtGui.QIcon(relPathToFullPath("res/app_web.png")))
+        self.setWindowIcon(QtGui.QIcon(relPathToFullPath("res/wapp.png")))
 
     def appActivated(self, model_index):
         print model_index

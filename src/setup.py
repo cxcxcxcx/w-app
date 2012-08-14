@@ -26,10 +26,12 @@ Change any web page into an app with a tray icon. Extension friendly.""",
       author="CHEN Xing",
       license='New BSD',
       platforms=['any'],
-      packages=['webapp'],
+      packages=['webapp', 'webapp.appbrowser'],
       package_data={
           'webapp': get_data('webapp/apps/', exclude=['.pyc']) + \
                     get_data('webapp/res') + get_data('webapp/locale'),
                     },
+      data_files=[('share/pixmaps', ['webapp/res/wapp.png']),
+          ('share/applications', ['wapp.desktop'])],
       scripts=['wapp']
 )
