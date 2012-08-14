@@ -2,7 +2,7 @@
 # The current version of this file partly comes from:
 #   http://code.google.com/p/python-webqq/
 # Copyright 2012 CHEN Xing (cx@chenxing.name)
-# BSD 3-Clause license and disclaimer applies.
+# Licensed under the terms of the BSD 3-Clause.
 
 import gtk
 

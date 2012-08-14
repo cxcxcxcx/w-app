@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 # Copyright 2012 CHEN Xing (cx@chenxing.name)
-# BSD 3-Clause license and disclaimer applies.
+# Licensed under the terms of the BSD 3-Clause.
 
 import json
 import utils

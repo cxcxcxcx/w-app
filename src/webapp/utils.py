@@ -2,9 +2,18 @@
 # The current version of this file partly comes from:
 #   http://code.google.com/p/python-webqq/
 # Copyright 2012 CHEN Xing (cx@chenxing.name)
-# BSD 3-Clause license and disclaimer applies.
+# Licensed under the terms of the BSD 3-Clause.
 
 import os
+
+import gettext
+lib_path = os.path.dirname(os.path.realpath(__file__))
+_ = gettext.translation('messages',
+        os.path.join(lib_path, 'locale'),
+    ).ugettext
+gettext.install('messages',
+    os.path.join(lib_path, 'locale'),
+    unicode=True, names=['ngettext'])
 
 
 def is_unity():

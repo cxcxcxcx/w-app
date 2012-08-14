@@ -1,13 +1,14 @@
 # Copyright 2012 CHEN Xing (cx@chenxing.name)
-# BSD 3-Clause license and disclaimer applies.
+# Licensed under the terms of the BSD 3-Clause.
 
 from PyQt4 import QtCore, QtGui
 import os
+from webapp import utils
 
 
 def relPathToFullPath(relpath):
-    app_path = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(app_path, '../', relpath)
+    return os.path.join(
+            utils.lib_path, relpath)
 
 
 def genAllApps():
