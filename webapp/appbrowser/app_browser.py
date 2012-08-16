@@ -27,15 +27,34 @@ class AppBrowser(QtGui.QMainWindow):
         from ui_appbrowse import Ui_AppBrowser
         self.ui = Ui_AppBrowser()
         self.ui.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(relPathToFullPath("res/wapp.png")))
+
+        QtCore.QTimer.singleShot(1, self.loadApps)
+
+    def loadApps(self):
+        """Load applications and icons"""
+        self.ui.statusbar.showMessage(
+            _("Loading apps and preparing icons... "
+                "(can be slow for the first time)"))
+        QtCore.QCoreApplication.processEvents()
+
+        self.downloadErrShown = False
+
         allApp = list(genAllApps())
-        self.ui.listAppStock.setModel(AppListModel(allApp))
+
+        self.ui.listAppStock.setModel(AppListModel(allApp, self))
         self.ui.listAppStock.setIconSize(QtCore.QSize(48, 48))
         self.ui.statusbar.showMessage("Double click to start an app.")
 
-        self.setWindowIcon(QtGui.QIcon(relPathToFullPath("res/wapp.png")))
+    def showDownloadError(self):
+        if self.downloadErrShown:
+            return
+        self.downloadErrShown = True
+        QtGui.QMessageBox.warning(self, _("Download error"),
+            _("Error occurred while downloading icons. ") +
+            _("Please check internet connection."))
 
     def appActivated(self, model_index):
-        print model_index
         model_index.model().runApp(model_index)
 
     def genDesktopEntry(self):
@@ -55,7 +74,8 @@ class AppBrowser(QtGui.QMainWindow):
 
 class AppListModel(QtCore.QAbstractListModel):
     def __init__(self, app_list, parent=None):
-        QtCore.QAbstractListModel.__init__(self, parent)
+        QtCore.QAbstractListModel.__init__(self, parent=parent)
+        self.parentWin = parent
         self.app_list = app_list
         self.app_list.sort(key=lambda x: x.appInfo["name"])
 
@@ -70,7 +90,13 @@ class AppListModel(QtCore.QAbstractListModel):
         if role == QtCore.Qt.DisplayRole:
             return cur_app.appInfo["name"]
         elif role == QtCore.Qt.DecorationRole:
-            return QtGui.QIcon(cur_app.get_app_icon())
+            import urllib2
+            try:
+                return QtGui.QIcon(cur_app.get_app_icon())
+            except urllib2.URLError:
+                # FIXME: Shouldn't reference a window here.
+                QtCore.QTimer.singleShot(1, self.parentWin.showDownloadError)
+                return QtCore.QVariant()
         elif role == QtCore.Qt.SizeHintRole:
             return QtCore.QSize(140, 70)
         else:

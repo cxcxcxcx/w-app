@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'appbrowse.ui'
 #
-# Created: Tue Aug 14 15:08:09 2012
-#      by: PyQt4 UI code generator 4.9.4
+# Created: Thu Aug 16 10:20:57 2012
+#      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -38,10 +38,11 @@ class Ui_AppBrowser(object):
         self.listAppStock = QtGui.QListView(self.centralwidget)
         self.listAppStock.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.listAppStock.setResizeMode(QtGui.QListView.Adjust)
-        self.listAppStock.setLayoutMode(QtGui.QListView.SinglePass)
+        self.listAppStock.setLayoutMode(QtGui.QListView.Batched)
         self.listAppStock.setSpacing(15)
         self.listAppStock.setViewMode(QtGui.QListView.IconMode)
         self.listAppStock.setUniformItemSizes(True)
+        self.listAppStock.setBatchSize(1)
         self.listAppStock.setObjectName(_fromUtf8("listAppStock"))
         self.gridLayout.addWidget(self.listAppStock, 1, 0, 1, 4)
         AppBrowser.setCentralWidget(self.centralwidget)
