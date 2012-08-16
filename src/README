@@ -1,0 +1,34 @@
+WARNING:
+W-App IS IN ITS EARLY STAGE AND STILL IN DEVELOPMENT, USE IT AT YOUR OWN RISK!
+
+W-App aims to turn a web application into a real desktop application. By
+default, W-App provides a desktop entry and a system tray icon. For more
+application specific features, one can use W-App's extension interface to
+create your own applications with system notification, automatic log-in, and
+whatever you like. You will also be able to download applications created by
+others.
+
+Currently, the following applications are included with the package:
+* Google Calendar
+* Google Mail
+* Google Tasks
+* Web QQ
+* Web Feixin (飞信)
+
+Among them, Web QQ has a customized interface (code mainly comes from another
+open source project python-webqq). Customization for other apps are still in
+development.
+
+Possible next steps:
+* The UI for creating a new application by a URL.
+* Shortcuts to call out a application.
+* Rewrite the GTK+ codes in Qt and QWebkit.
+* A tutorial for creating a new app with customizations.
+* Write comments for source codes.
+
+If have suggestions for a feature, or for including another webapp by default,
+please do submit a issue. Thanks! 
+
+Acknowledgement:
+Currently the codes related to GTK+ and webkit are mainly from python-webqq,
+which is available at: http://code.google.com/p/python-webqq/

@@ -57,6 +57,7 @@ class AppListModel(QtCore.QAbstractListModel):
     def __init__(self, app_list, parent=None):
         QtCore.QAbstractListModel.__init__(self, parent)
         self.app_list = app_list
+        self.app_list.sort(key=lambda x: x.appInfo["name"])
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.app_list)
