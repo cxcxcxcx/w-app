@@ -70,6 +70,10 @@ class AppListModel(QtCore.QAbstractListModel):
             return cur_app.appInfo["name"]
         elif role == QtCore.Qt.DecorationRole:
             return QtGui.QIcon(cur_app.get_app_icon())
+        elif role == QtCore.Qt.SizeHintRole:
+            return QtCore.QSize(140, 70)
+        else:
+            return QtCore.QVariant()
 
     def runApp(self, index):
         """Run the app at given index."""

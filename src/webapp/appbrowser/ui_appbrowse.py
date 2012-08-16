@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'appbrowse.ui'
 #
-# Created: Tue Aug 14 13:21:56 2012
+# Created: Tue Aug 14 15:08:09 2012
 #      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -37,7 +37,9 @@ class Ui_AppBrowser(object):
         self.gridLayout.addItem(spacerItem1, 0, 3, 1, 1)
         self.listAppStock = QtGui.QListView(self.centralwidget)
         self.listAppStock.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.listAppStock.setSpacing(5)
+        self.listAppStock.setResizeMode(QtGui.QListView.Adjust)
+        self.listAppStock.setLayoutMode(QtGui.QListView.SinglePass)
+        self.listAppStock.setSpacing(15)
         self.listAppStock.setViewMode(QtGui.QListView.IconMode)
         self.listAppStock.setUniformItemSizes(True)
         self.listAppStock.setObjectName(_fromUtf8("listAppStock"))

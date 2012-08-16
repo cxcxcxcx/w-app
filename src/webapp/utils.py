@@ -10,6 +10,7 @@ import gettext
 lib_path = os.path.dirname(os.path.realpath(__file__))
 _ = gettext.translation('messages',
         os.path.join(lib_path, 'locale'),
+        fallback=True
     ).ugettext
 gettext.install('messages',
     os.path.join(lib_path, 'locale'),
@@ -40,17 +41,15 @@ def shift_string(string, i):
 
 
 def read_config(ini_path):
+    """May throw exception if error occurs."""
     print ini_path
     import StringIO
     import ConfigParser
-    try:
-        ini_str = '[root]\n' + open(ini_path, 'r').read()
-        ini_fp = StringIO.StringIO(ini_str)
-        config = ConfigParser.RawConfigParser()
-        config.readfp(ini_fp)
-        return config
-    except:
-        return None
+    ini_str = '[root]\n' + open(ini_path, 'r').read()
+    ini_fp = StringIO.StringIO(ini_str)
+    config = ConfigParser.RawConfigParser()
+    config.readfp(ini_fp)
+    return config
 
 
 def get_user_download_dir():
@@ -66,5 +65,5 @@ def get_user_download_dir():
             return download_dir
         return download_dir_val.strip('"')
     except:
-        # TODO: what to return?
-        raise
+        # TODO: Log it
+        return os.path.expanduser("~/")

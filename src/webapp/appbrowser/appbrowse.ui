@@ -64,8 +64,14 @@
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
       </property>
+      <property name="resizeMode">
+       <enum>QListView::Adjust</enum>
+      </property>
+      <property name="layoutMode">
+       <enum>QListView::SinglePass</enum>
+      </property>
       <property name="spacing">
-       <number>5</number>
+       <number>15</number>
       </property>
       <property name="viewMode">
        <enum>QListView::IconMode</enum>
