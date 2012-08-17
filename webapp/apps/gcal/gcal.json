@@ -5,6 +5,6 @@
 	"url": "http://www.google.com/calendar/gp?dc=gorganic", 
     "icon": "gcal.png", 
 	"icon-url": "https://developers.google.com/chrome/web-store/images/imageAssets/calendar.png",
-    "size": [1024, 700]
+    "size": [600, 700]
 }
 
