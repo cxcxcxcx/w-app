@@ -5,6 +5,7 @@
 # Licensed under the terms of the BSD 3-Clause.
 
 import os
+import logging
 
 import gettext
 lib_path = os.path.dirname(os.path.realpath(__file__))
@@ -15,6 +16,19 @@ _ = gettext.translation('messages',
 gettext.install('messages',
     os.path.join(lib_path, 'locale'),
     unicode=True, names=['ngettext'])
+
+
+def getMyLogger(name, level=logging.INFO):
+    """Get a logger with a name"""
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    if logger.handlers:
+        return logger
+    handler = logging.StreamHandler()
+    handler.setFormatter(
+        logging.Formatter("%(levelname)s:%(name)s-- %(message)s"))
+    logger.addHandler(handler)
+    return logger
 
 
 def is_unity():

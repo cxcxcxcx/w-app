@@ -9,6 +9,9 @@ import sys
 
 from mainwindow import MainWindow
 
+from utils import getMyLogger
+logger = getMyLogger("webapp")
+
 
 def loadClass(confList, default):
     if confList is None:
@@ -18,9 +21,8 @@ def loadClass(confList, default):
         modName, clsName = confList
         return getattr(__import__(modName), clsName)
     except:
+        logger.error("Cannot load specified module or class")
         raise
-        print "Use default class"
-        return default
 
 
 class WebApp():
@@ -31,7 +33,6 @@ class WebApp():
         self.app_dir = os.path.dirname(app_file)
 
     def generateDesktop(self):
-        print sys.argv[0]
         template = \
 """[Desktop Entry]
 Encoding=UTF-8
@@ -115,12 +116,13 @@ GenericName=MyApp
         if make_dir:
             full_dir = os.path.dirname(full_path)
             try:
-                os.makedirs(full_dir, mode=0700)
+                os.makedirs(full_dir, mode=0o700)
+                logger.info("Dir %s created" % full_dir)
             except OSError:
                 pass
 
         if touch_file and not os.path.exists(full_path):
-            print "CREATING"
+            logger.info("Creating file %s" % full_path)
             os.mknod(full_path)
         return full_path
 
@@ -136,7 +138,7 @@ GenericName=MyApp
                             "Mozilla/5.0 (X11; U; Linux i686) " +
                             "Gecko/20071127 Firefox/2.0.0.11"
                         })))
-        print soup
-        print soup.title.string
-        print soup.find("link", rel="shortcut icon")
-        print soup.find("link")
+        print(soup)
+        #print soup.title.string
+        #print soup.find("link", rel="shortcut icon")
+        #print soup.find("link")

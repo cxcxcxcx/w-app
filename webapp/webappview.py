@@ -4,6 +4,7 @@
 # Copyright 2012 CHEN Xing (cx@chenxing.name)
 # Licensed under the terms of the BSD 3-Clause.
 
+import webbrowser
 import webkit
 import ctypes
 
@@ -22,7 +23,10 @@ libsoup = ctypes.CDLL('libsoup-2.4.so.1')
 class WebAppView(webkit.WebView):
     def __init__(self, app):
         webkit.WebView.__init__(self)
-        #self.hovered_uri = None
+
+        # The last URI the mouse hovered
+        self.hovered_uri = None
+
         self.config = app.config
         self.app = app
         self.init_settings()
@@ -32,7 +36,7 @@ class WebAppView(webkit.WebView):
 
     def init_settings(self):
         settings = self.get_settings()
-        #settings.set_property("auto-resize-window", False)
+        settings.set_property("auto-resize-window", True)
         settings.set_property('enable-universal-access-from-file-uris', True)
         settings.set_property('enable-file-access-from-file-uris', True)
         settings.set_property('enable-page-cache', True)
@@ -40,7 +44,6 @@ class WebAppView(webkit.WebView):
         settings.set_property('enable-site-specific-quirks', True)
         #settings.set_property('user-agent', 'Mozilla/5.0 (Linux; U; Android 2.2; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1')
         self.set_settings(settings)
-        #settings.set_property('user-agent', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.4+ (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.4+')
 
     def init_cookie(self):
         cookie_file = self.config.app.get_user_file(
@@ -59,6 +62,9 @@ class WebAppView(webkit.WebView):
                 session, 'proxy-uri', self.config["proxy_uri"], None)
 
     def init_signals(self):
+        self.connect("create-web-view", self.create_webView)
+        self.connect("hovering-over-link", self.hovering_over_ink)
+
         self.connect(
                 'mime-type-policy-decision-requested',
                 self.policy_decision_requested)
@@ -82,7 +88,8 @@ class WebAppView(webkit.WebView):
         if download.get_status() == 3:
             self.app.notification(_("File download completed"), file_name)
 
-    def policy_decision_requested(self, view, frame, request, mimetype, decision):
+    def policy_decision_requested(self,
+            view, frame, request, mimetype, decision):
         if self.can_show_mime_type(mimetype):
             return False
         decision.download()
@@ -91,22 +98,13 @@ class WebAppView(webkit.WebView):
     def title_changed(self, view, frame, title):
         self.app.window.set_title(title)
 
-    #def load_finished(self, view, frame):
-        ##print view.get_property('uri') + ':ok:' + frame.get_property('uri')
-        #frame_uri = frame.get_property('uri')
-        #if self.config.login_auto_run == 'yes' and const.URL == frame_uri:
-            #self.execute_script('alloy.portal.runApp(50);')
-            #return
+    def hovering_over_ink(self, view, title, uri):
+        """Mouse hovering a link.
 
-    #def navigation_policy_decision_requested(self, view, frame, request, aciton, decision):
-        #if utils.is_qq_download(request.get_uri()):
-            #decision.download()
-            #return True
-        #return False
+        Save the URI for future use."""
+        self.hovered_uri = uri
 
-    #def create_webView(self, view, frame):
-        #if self.hovered_uri:
-            #webbrowser.open_new_tab(self.hovered_uri)
-
-    #def hovering_over_ink(self, view, title, uri):
-        #self.hovered_uri = uri
+    def create_webView(self, view, frame):
+        """When a new window is requested, open it in regular webbrowser"""
+        if self.hovered_uri:
+            webbrowser.open_new_tab(self.hovered_uri)
