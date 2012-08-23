@@ -37,6 +37,7 @@ class AppListView(QListView):
         actionCreateDesktop = QAction("Create desktop shortcut...", self)
         actionEdit = QAction("Edit...", self)
         actionClearLocal = QAction("Clear local data", self)
+        actionRemoveApp = QAction("Remove App!", self)
         menu = QMenu()
         if indexPos.model() is None:
             # On blank area.
@@ -47,6 +48,7 @@ class AppListView(QListView):
             menu.addAction(actionCreateDesktop)
             menu.addAction(actionEdit)
             menu.addAction(actionClearLocal)
+            menu.addAction(actionRemoveApp)
 
         act = menu.exec_(event.globalPos())
         if act is actionCreateDesktop:
@@ -57,6 +59,9 @@ class AppListView(QListView):
             app.clear_local()
         elif act is actionCreate:
             self.parent().parent().createApp()
+        elif act is actionRemoveApp:
+            app.remove_app()
+            self.model().loadData()
         #menu.popup(self.ui.listAppStock.mapToGlobal(pos))
 
     def showDownloadError(self):
@@ -104,7 +109,9 @@ class AppListModel(QAbstractListModel):
             return cur_app.appInfo["name"]
         elif role == Qt.DecorationRole:
             try:
-                icon = QtGui.QPixmap(cur_app.get_app_icon())
+                icon = QtGui.QPixmap()
+                icon.loadFromData(
+                        open(cur_app.get_app_icon(), 'rb').read())
                 icon = icon.scaledToHeight(
                         kIconSize, Qt.SmoothTransformation)
                 return icon

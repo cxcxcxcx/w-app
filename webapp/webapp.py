@@ -4,6 +4,7 @@
 
 import json
 import gtk
+import shutil
 import sys
 import os
 import urllib2
@@ -38,6 +39,11 @@ class WebApp():
     def edit(self):
         utils.openEditor(self.app_file)
 
+    def get_desktop_path(self):
+        return os.path.expanduser(
+                "~/.local/share/applications/wapp-%s.desktop" %
+                    self.appInfo["uuid"])
+
     def generateDesktop(self):
         template = \
 """[Desktop Entry]
@@ -55,9 +61,7 @@ GenericName=MyApp
                 'app_file': self.app_file,
                 'icon': self.get_app_icon()
                 }
-        desktopPath = os.path.expanduser(
-                "~/.local/share/applications/wapp-%s.desktop" %
-                    self.appInfo["name"])
+        desktopPath = self.get_desktop_path()
         # TODO: Catch exception
         # TODO: Ensure the directory exists
         with open(desktopPath, "w") as f:
@@ -101,8 +105,20 @@ GenericName=MyApp
         notify.show()
 
     def clear_local(self):
-        import shutil
+        """Clear local caches and cookies..."""
         shutil.rmtree(self.get_conf_dir(self.appInfo["uuid"]))
+
+    def remove_app(self):
+        """Remove the app!"""
+        try:
+            os.remove(self.get_desktop_path())
+        except OSError as e:
+            if e.errno == 2:
+                # File not found.
+                pass
+            else:
+                raise e
+        shutil.rmtree(self.app_dir)
 
     def run(self):
         sys.path.append(os.path.join(self.app_dir, 'src'))
@@ -167,9 +183,9 @@ GenericName=MyApp
         icon_url = soup.find("link", rel="apple-touch-icon")
         if icon_url is None:
             icon_url = soup.find("link", rel="shortcut icon")
+            appJson['icon'] = 'icon.ico'
         if icon_url:
             appJson['icon-url'] = icon_url['href']
-            appJson['icon'] = 'icon.ico'
 
         app_dir = cls.get_local_apps_dir(appJson['uuid'])
         utils.ensure_dir_exists(app_dir)
