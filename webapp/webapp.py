@@ -2,13 +2,17 @@
 # Copyright 2012 CHEN Xing (cx@chenxing.name)
 # Licensed under the terms of the BSD 3-Clause.
 
+import json
 import gtk
-import tray
-import os
 import sys
+import os
+import urllib2
+import uuid
 
 from mainwindow import MainWindow
 
+import tray
+import utils
 from utils import getMyLogger
 logger = getMyLogger("webapp")
 
@@ -27,7 +31,6 @@ def loadClass(confList, default):
 
 class WebApp():
     def __init__(self, app_file):
-        import json
         self.appInfo = json.load(open(app_file, "r"))
         self.app_file = os.path.abspath(app_file)
         self.app_dir = os.path.dirname(app_file)
@@ -71,17 +74,19 @@ GenericName=MyApp
 
         if os.path.exists(icon_path):
             return icon_path
-        else:
-            # If the icon doesn't exist, download to a local dir.
-            local_path = self.get_user_file(icon_name)
-            if os.path.exists(local_path):
-                return local_path
 
-            import urllib2
-            icon = urllib2.urlopen(self.appInfo["icon-url"]).read()
-            with open(local_path, "wb") as f:
-                f.write(icon)
+        # If the icon doesn't exist, download to a local dir.
+        local_path = self.get_user_file(icon_name)
+        if os.path.exists(local_path):
             return local_path
+
+        if not "icon-url" in self.appInfo:
+            logger.debug("No icon available..")
+            return utils.libFile(utils.WAPP_ICON)
+        icon = urllib2.urlopen(self.appInfo["icon-url"]).read()
+        with open(local_path, "wb") as f:
+            f.write(icon)
+        return local_path
 
     def notification(self, content, title):
         """Show a notification"""
@@ -107,19 +112,14 @@ GenericName=MyApp
         gtk.main()
 
     def get_user_dir(self):
-        return os.path.expanduser(
-                "~/.config/webapp/%s/" % self.appInfo["uuid"])
+        return self.get_conf_dir(self.appInfo["uuid"])
 
     def get_user_file(self, file_name, make_dir=True, touch_file=False):
         user_dir = self.get_user_dir()
         full_path = os.path.join(user_dir, file_name)
         if make_dir:
             full_dir = os.path.dirname(full_path)
-            try:
-                os.makedirs(full_dir, mode=0o700)
-                logger.info("Dir %s created" % full_dir)
-            except OSError:
-                pass
+            utils.ensure_dir_exists(full_dir)
 
         if touch_file and not os.path.exists(full_path):
             logger.info("Creating file %s" % full_path)
@@ -127,9 +127,21 @@ GenericName=MyApp
         return full_path
 
     @classmethod
-    def createWebApp(cls, url):
+    def get_conf_dir(cls, subdir=""):
+        return os.path.expanduser(
+                "~/.config/webapp/%s/" % subdir)
+
+    @classmethod
+    def get_local_apps_dir(cls, subdir=""):
+        return cls.get_conf_dir("apps/%s/" % subdir)
+
+    @classmethod
+    def createWebApp(cls, name, url):
+        """Create a new application by name and url."""
+        if len(name.strip()) == 0:
+            raise ValueError("Name is empty!")
+
         import BeautifulSoup
-        import urllib2
         soup = BeautifulSoup.BeautifulSoup(
                 urllib2.urlopen(
                     urllib2.Request(
@@ -138,7 +150,21 @@ GenericName=MyApp
                             "Mozilla/5.0 (X11; U; Linux i686) " +
                             "Gecko/20071127 Firefox/2.0.0.11"
                         })))
-        print(soup)
-        #print soup.title.string
-        #print soup.find("link", rel="shortcut icon")
-        #print soup.find("link")
+        appJson = {
+            'uuid': str(uuid.uuid4()),
+            'name': name,
+            'url': url,
+            'icon': 'icon.png',
+            'size': [800, 600],
+        }
+        icon_url = soup.find("link", rel="apple-touch-icon")
+        if icon_url is None:
+            icon_url = soup.find("link", rel="shortcut icon")
+        if icon_url:
+            appJson['icon-url'] = icon_url['href']
+            appJson['icon'] = 'icon.ico'
+
+        app_dir = cls.get_local_apps_dir(appJson['uuid'])
+        utils.ensure_dir_exists(app_dir)
+        with open("%s/%s" % (app_dir, 'app.json'), 'w') as f:
+            json.dump(appJson, f, ensure_ascii=False, indent=4)

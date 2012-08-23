@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'appbrowse.ui'
 #
-# Created: Thu Aug 16 10:20:57 2012
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Wed Aug 22 18:41:43 2012
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -57,6 +57,7 @@ class Ui_AppBrowser(object):
         self.retranslateUi(AppBrowser)
         QtCore.QObject.connect(self.listAppStock, QtCore.SIGNAL(_fromUtf8("activated(QModelIndex)")), AppBrowser.appActivated)
         QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), AppBrowser.genDesktopEntry)
+        QtCore.QObject.connect(self.pushButton_2, QtCore.SIGNAL(_fromUtf8("clicked()")), AppBrowser.createApp)
         QtCore.QMetaObject.connectSlotsByName(AppBrowser)
 
     def retranslateUi(self, AppBrowser):

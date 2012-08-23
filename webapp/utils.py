@@ -9,6 +9,7 @@ import logging
 
 import gettext
 lib_path = os.path.dirname(os.path.realpath(__file__))
+
 _ = gettext.translation('messages',
         os.path.join(lib_path, 'locale'),
         fallback=True
@@ -16,6 +17,12 @@ _ = gettext.translation('messages',
 gettext.install('messages',
     os.path.join(lib_path, 'locale'),
     unicode=True, names=['ngettext'])
+
+WAPP_ICON = "res/wapp.png"
+
+
+def libFile(relpath):
+    return os.path.join(lib_path, relpath)
 
 
 def getMyLogger(name, level=logging.INFO):
@@ -29,6 +36,14 @@ def getMyLogger(name, level=logging.INFO):
         logging.Formatter("%(levelname)s:%(name)s-- %(message)s"))
     logger.addHandler(handler)
     return logger
+
+
+def ensure_dir_exists(path, mode=0o700):
+    try:
+        os.makedirs(path, mode=mode)
+        #logger.info("Dir %s created" % full_dir)
+    except OSError:
+        pass
 
 
 def is_unity():

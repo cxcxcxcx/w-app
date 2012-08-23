@@ -132,9 +132,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>AppBrowser</receiver>
+   <slot>createApp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>411</x>
+     <y>47</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>appActivated(QModelIndex)</slot>
   <slot>genDesktopEntry()</slot>
+  <slot>createApp()</slot>
  </slots>
 </ui>
