@@ -33,20 +33,13 @@
      </spacer>
     </item>
     <item row="0" column="1">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pushButton_2">
       <property name="text">
-       <string>Generate desktop entry</string>
+       <string>Create...</string>
       </property>
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string>Create</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
      <spacer name="horizontalSpacer_3">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -59,8 +52,8 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="0" colspan="4">
-     <widget class="QListView" name="listAppStock">
+    <item row="1" column="0" colspan="3">
+     <widget class="AppListView" name="listAppStock">
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
       </property>
@@ -98,6 +91,13 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AppListView</class>
+   <extends>QListView</extends>
+   <header>applistview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -113,22 +113,6 @@
     <hint type="destinationlabel">
      <x>218</x>
      <y>374</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton</sender>
-   <signal>clicked()</signal>
-   <receiver>AppBrowser</receiver>
-   <slot>genDesktopEntry()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>117</x>
-     <y>46</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>55</x>
-     <y>41</y>
     </hint>
    </hints>
   </connection>
@@ -153,5 +137,6 @@
   <slot>appActivated(QModelIndex)</slot>
   <slot>genDesktopEntry()</slot>
   <slot>createApp()</slot>
+  <slot>applistContextMenu(QPoint)</slot>
  </slots>
 </ui>

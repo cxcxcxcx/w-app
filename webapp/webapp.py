@@ -35,6 +35,9 @@ class WebApp():
         self.app_file = os.path.abspath(app_file)
         self.app_dir = os.path.dirname(app_file)
 
+    def edit(self):
+        utils.openEditor(self.app_file)
+
     def generateDesktop(self):
         template = \
 """[Desktop Entry]
@@ -47,7 +50,7 @@ Terminal=false
 GenericName=MyApp
 """
         desktopStr = template % {
-                'name': self.appInfo["name"],
+                'name': "%s (W-App)" % self.appInfo["name"],
                 'exec': os.path.abspath(sys.argv[0]),
                 'app_file': self.app_file,
                 'icon': self.get_app_icon()
@@ -96,6 +99,10 @@ GenericName=MyApp
         notify.set_urgency(pynotify.URGENCY_NORMAL)
         notify.set_timeout(3)
         notify.show()
+
+    def clear_local(self):
+        import shutil
+        shutil.rmtree(self.get_conf_dir(self.appInfo["uuid"]))
 
     def run(self):
         sys.path.append(os.path.join(self.app_dir, 'src'))

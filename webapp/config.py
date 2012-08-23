@@ -45,5 +45,4 @@ class Config(object):
         print "reload config..."
 
     def edit(self):
-        import subprocess
-        subprocess.call(['xdg-open', self.conf_file])
+        utils.openEditor(self.conf_file)

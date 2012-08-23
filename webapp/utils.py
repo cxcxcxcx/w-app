@@ -25,6 +25,12 @@ def libFile(relpath):
     return os.path.join(lib_path, relpath)
 
 
+def openEditor(file_path):
+    """Open a file editor"""
+    import subprocess
+    subprocess.call(['xdg-open', file_path])
+
+
 def getMyLogger(name, level=logging.INFO):
     """Get a logger with a name"""
     logger = logging.getLogger(name)
