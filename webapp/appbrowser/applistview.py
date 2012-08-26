@@ -3,7 +3,7 @@
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QMenu, QAction, QListView
+from PyQt4.QtGui import QMenu, QListView
 from PyQt4.QtCore import QAbstractListModel
 
 import os
@@ -31,38 +31,53 @@ class AppListView(QListView):
 
         self.downloadErrShown = False
 
-    def contextMenuEvent(self, event):
-        indexPos = self.indexAt(event.pos())
-        actionCreate = QAction("Create new application...", self)
-        actionCreateDesktop = QAction("Create desktop shortcut...", self)
-        actionEdit = QAction("Edit...", self)
-        actionClearLocal = QAction("Clear local data", self)
-        actionRemoveApp = QAction("Remove App!", self)
-        menu = QMenu()
-        if indexPos.model() is None:
-            # On blank area.
-            menu.addAction(actionCreate)
-        else:
-            app = indexPos.model().getAppAtIndex(indexPos)
-            print app.appInfo["name"]
-            menu.addAction(actionCreateDesktop)
-            menu.addAction(actionEdit)
-            menu.addAction(actionClearLocal)
-            menu.addAction(actionRemoveApp)
+        # To be set through functions
+        self.win = None
 
-        act = menu.exec_(event.globalPos())
-        if act is actionCreateDesktop:
+    def selectionChanged(self, selected, deselected):
+        """Reimplementation of selectionChanged."""
+        if len(selected.indexes()) == 0:
+            self.win.ui.toolBarApp.setEnabled(False)
+        else:
+            self.win.ui.toolBarApp.setEnabled(True)
+
+    def actionTriggered(self, action):
+        """Slot: actionTriggered(QAction*)"""
+        indexPos = self.selectionModel().selectedIndexes()
+        if len(indexPos) == 0:
+            app = None
+        else:
+            indexPos = indexPos[0]
+            app = self.model().getAppAtIndex(indexPos)
+        if action is self.win.ui.actionCreate:
+            self.win.createApp()
+        elif action is self.win.ui.actionCreateDesktop:
             app.generateDesktop()
-        elif act is actionEdit:
+        elif action is self.win.ui.actionRun:
+            self.model().runApp(indexPos)
+        elif action is self.win.ui.actionEdit:
             app.edit()
-        elif act is actionClearLocal:
+        elif action is self.win.ui.actionClearLocal:
             app.clear_local()
-        elif act is actionCreate:
-            self.parent().parent().createApp()
-        elif act is actionRemoveApp:
+        elif action is self.win.ui.actionRemoveApp:
             app.remove_app()
             self.model().loadData()
-        #menu.popup(self.ui.listAppStock.mapToGlobal(pos))
+
+    def contextMenuEvent(self, event):
+        indexPos = self.indexAt(event.pos())
+        menu = QMenu(self)
+        if indexPos.model() is None:
+            # On blank area.
+            menu.addAction(self.win.ui.actionCreate)
+        else:
+            menu.addAction(self.win.ui.actionRun)
+            menu.addSeparator()
+            menu.addAction(self.win.ui.actionCreateDesktop)
+            menu.addAction(self.win.ui.actionEdit)
+            menu.addAction(self.win.ui.actionClearLocal)
+            menu.addAction(self.win.ui.actionRemoveApp)
+
+        menu.popup(event.globalPos())
 
     def showDownloadError(self):
         if self.downloadErrShown:

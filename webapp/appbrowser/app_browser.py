@@ -21,10 +21,13 @@ class AppBrowser(QtGui.QMainWindow):
         from ui_appbrowse import Ui_AppBrowser
         self.ui = Ui_AppBrowser()
         self.ui.setupUi(self)
+        self.ui.listAppStock.win = self
         self.setWindowIcon(QtGui.QIcon(
             utils.libFile(utils.WAPP_ICON)))
 
         QtCore.QTimer.singleShot(1, self.loadApps)
+        QtCore.QCoreApplication.setAttribute(
+                QtCore.Qt.AA_DontShowIconsInMenus, False)
 
     def loadApps(self):
         """Load applications and icons"""

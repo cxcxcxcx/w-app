@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>495</width>
-    <height>565</height>
+    <width>526</width>
+    <height>561</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,40 +19,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>92</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string>Create...</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <spacer name="horizontalSpacer_3">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>92</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0" colspan="3">
+    <item row="0" column="0" colspan="2">
      <widget class="AppListView" name="listAppStock">
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
@@ -84,18 +51,112 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>495</width>
+     <width>526</width>
      <height>26</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionCreate"/>
+  </widget>
+  <widget class="QToolBar" name="toolBarApp">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionRun"/>
+   <addaction name="actionCreateDesktop"/>
+   <addaction name="actionEdit"/>
+   <addaction name="actionClearLocal"/>
+   <addaction name="actionRemoveApp"/>
+  </widget>
+  <action name="actionCreate">
+   <property name="icon">
+    <iconset theme="list-add"/>
+   </property>
+   <property name="text">
+    <string>Create New</string>
+   </property>
+   <property name="toolTip">
+    <string>Create new application</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset theme="system-run"/>
+   </property>
+   <property name="text">
+    <string>Run!</string>
+   </property>
+   <property name="toolTip">
+    <string>Run application</string>
+   </property>
+  </action>
+  <action name="actionCreateDesktop">
+   <property name="icon">
+    <iconset theme="emblem-symbolic-link"/>
+   </property>
+   <property name="text">
+    <string>Create Desktop</string>
+   </property>
+   <property name="toolTip">
+    <string>Create desktop shortcut</string>
+   </property>
+  </action>
+  <action name="actionEdit">
+   <property name="icon">
+    <iconset theme="accessories-text-editor"/>
+   </property>
+   <property name="text">
+    <string>Edit</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit application</string>
+   </property>
+  </action>
+  <action name="actionClearLocal">
+   <property name="icon">
+    <iconset theme="edit-clear"/>
+   </property>
+   <property name="text">
+    <string>Clear local data</string>
+   </property>
+  </action>
+  <action name="actionRemoveApp">
+   <property name="icon">
+    <iconset theme="list-remove"/>
+   </property>
+   <property name="text">
+    <string>Remove App!</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>AppListView</class>
    <extends>QListView</extends>
    <header>applistview.h</header>
+   <slots>
+    <slot>actionTriggered(QAction*)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -117,18 +178,34 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_2</sender>
-   <signal>clicked()</signal>
-   <receiver>AppBrowser</receiver>
-   <slot>createApp()</slot>
+   <sender>toolBar</sender>
+   <signal>actionTriggered(QAction*)</signal>
+   <receiver>listAppStock</receiver>
+   <slot>actionTriggered(QAction*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>348</x>
-     <y>49</y>
+     <x>48</x>
+     <y>50</y>
     </hint>
     <hint type="destinationlabel">
-     <x>411</x>
-     <y>47</y>
+     <x>262</x>
+     <y>302</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolBarApp</sender>
+   <signal>actionTriggered(QAction*)</signal>
+   <receiver>listAppStock</receiver>
+   <slot>actionTriggered(QAction*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>170</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>262</x>
+     <y>302</y>
     </hint>
    </hints>
   </connection>
