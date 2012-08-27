@@ -1,5 +1,5 @@
 ==================================================
-W-App: A real desktop application from Web pages
+W-App: Real desktop applications from web pages
 ==================================================
 
 **WARNING:
@@ -36,18 +36,21 @@ and download customized web applications.
 
 Installation
 ~~~~~~~~~~~~
-For **Archlinux** users, try it NOW by installing `w-app-git` from AUR.
+For **Archlinux** users, try it NOW by installing ``w-app-git`` from AUR.
 
 For other distributions, please install Python 2 packages including
-`pywebkitgtk`, `python-keybinder`, `python-notify`, `python-pyqt` and
-`python-beautifulsoup3`. Names of these packages may vary. Python 3 will be
+``pywebkitgtk``, ``python-keybinder``, ``python-notify``, ``python-pyqt`` and
+``python-beautifulsoup3``. Names of these packages may vary. Python 3 will be
 supported once the switch from PyGTK to PyQt is done.
 
 For all **GNOME 3** users, we highly recommend the extension
 https://github.com/rcmorano/gnome-shell-gnome2-notifications (AUR:
-`gnome-shell-extension-gnome2-notifications-git`) to show tray icons in the top
-panel. (Restarting GNOME Shell is required for the extension to be in effect)
+``gnome-shell-extension-gnome2-notifications-git``) to show tray icons in the
+top panel. (Restarting GNOME Shell is required for the extension to be in
+effect)
 
+To run the application, find ``W-App`` in system menu or run ``wapp`` in
+command line.
 
 What's Next?
 ~~~~~~~~~~~~~~~~
@@ -60,7 +63,8 @@ Short-period:
 Long-period:
 
 * Prepare some APIs for creating desktop apps.
-* Build an app store so that people can share and download wrappers from different web apps. 
+* Build an app store so that people can share and download wrappers from
+  different web apps.  
 * Rewrite the GTK+ codes in Qt and QWebkit.
 * A tutorial for creating a new app with customizations.
 
