@@ -5,7 +5,6 @@
 # Licensed under the terms of the BSD 3-Clause.
 
 import gtk
-import keybinder
 import utils
 from utils import _
 
@@ -29,6 +28,7 @@ class Tray():
         else:
             self.makeTray()
         if self.config["hot_key"]:
+            import keybinder
             keybinder.bind(self.config["hot_key"], self.keybind_callback)
 
     def makeTray(self):
